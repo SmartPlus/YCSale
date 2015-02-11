@@ -1,0 +1,2 @@
+# YCSale
+An example site
