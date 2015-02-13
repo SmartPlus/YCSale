@@ -1,28 +1,28 @@
-package wishes
+package service
 
 import (
-	"YCSale/db"
+	"YCSale/database"
+	"YCSale/model"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2"
 )
 
-func Init(m *martini.ClassicMartini, col string) {
-	setName(col)
+func addWishService(m *martini.ClassicMartini) {
 	m.Group("/wishes", func(router martini.Router) {
 		router.Get("", func(r render.Render, db *mgo.Database) {
 			r.HTML(200, "list", map[string]interface{}{
 				"Title":  "Wish",
-				"Wishes": GetAll(db),
+				"Wishes": model.WishModel.GetAll(db),
 			})
 		})
-		router.Post("", binding.Form(Wish{}), func(wish Wish, r render.Render, db *mgo.Database) {
-			(&wish).Save(db)
+		router.Post("", binding.Form(model.Wish{}), func(w model.Wish, r render.Render, db *mgo.Database) {
+			model.WishModel.Save(&w, db)
 			r.HTML(200, "list", map[string]interface{}{
 				"Title":  "Wish",
-				"Wishes": GetAll(db),
+				"Wishes": model.WishModel.GetAll(db),
 			})
 		})
-	}, db.Get())
+	}, database.GetMartini())
 }

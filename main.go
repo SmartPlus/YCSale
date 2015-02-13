@@ -1,10 +1,10 @@
 package main
 
 import (
-	"YCSale/db"
+	"YCSale/database"
 	"YCSale/security"
+	"YCSale/service"
 	"YCSale/session"
-	"YCSale/wishes"
 	"encoding/json"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
@@ -81,11 +81,11 @@ func main() {
 	}))
 
 	security.Init(m)
-	if err := db.Init(MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, MONG_DB_NAME); err != nil {
+	if err := database.Init(MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, MONG_DB_NAME); err != nil {
 		panic(err)
 	}
 
-	wishes.Init(m, WISHES_COLLECTION_NAME)
+	service.Init(m, map[string]string{"wish": WISHES_COLLECTION_NAME})
 	m.Get("/", func(r render.Render) {
 		r.HTML(200, ADMIN_PAGE, map[string]string{
 			"Title": "Admin",
