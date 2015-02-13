@@ -27,5 +27,8 @@ func addUserService(m *martini.ClassicMartini) {
 		router.Get("/:_id", func(params martini.Params, r render.Render, db *mgo.Database) {
 			r.JSON(200, model.UserModel.FindById(params["_id"], db))
 		})
+		router.Put("/:_id", binding.Json(model.User{}), func(params martini.Params, u model.User, r render.Render, db *mgo.Database) {
+			model.UserModel.UpdateById(params["_id"], &u, db)
+		})
 	}, database.GetMartini())
 }

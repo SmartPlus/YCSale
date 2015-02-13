@@ -6,11 +6,11 @@ import (
 )
 
 type User struct {
-	Id       string `bson:"_id,omitempty" json:"_id,omitempty"`
-	Role     string `json:"role"` /* Admin; CTV Basic; CTV Consultant; CSV Leader; CTV staff */
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Id       bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	Role     string        `json:"role"` /* Admin; CTV Basic; CTV Consultant; CSV Leader; CTV staff */
+	Name     string        `json:"name"`
+	Email    string        `json:"email"`
+	Password string        `json:"password"`
 }
 
 type userModel struct {
@@ -25,16 +25,21 @@ func (m *userModel) GetAll(db *mgo.Database) (userlist []User) {
 }
 
 func (m *userModel) Save(u *User, db *mgo.Database) {
-	u.Id = string(bson.NewObjectId())
 	db.C(m.Name).Insert(u)
 }
 
 func (m *userModel) RemoveById(id string, db *mgo.Database) {
-	err := db.C(m.Name).RemoveId(id)
+	err := db.C(m.Name).RemoveId(bson.ObjectIdHex(id))
 	println(err.Error())
 }
 
 func (m *userModel) FindById(id string, db *mgo.Database) (u User) {
-	db.C(m.Name).FindId(id).All(&u)
+	db.C(m.Name).FindId(bson.ObjectIdHex(id)).One(&u)
+	return
+}
+
+func (m *userModel) UpdateById(id string, u *User, db *mgo.Database) {
+	u.Id = bson.ObjectIdHex(id) // safe user
+	db.C(m.Name).UpdateId(bson.ObjectIdHex(id), u)
 	return
 }
