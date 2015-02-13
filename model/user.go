@@ -6,11 +6,11 @@ import (
 )
 
 type User struct {
-	Id       bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
-	Role     string        `json:"role"` /* Admin; CTV Basic; CTV Consultant; CSV Leader; CTV staff */
-	Name     string        `json:"name"`
-	Email    string        `json:"email"`
-	Password string        `json:"password"`
+	Id       string `bson:"_id,omitempty" json:"_id,omitempty"`
+	Role     string `json:"role"` /* Admin; CTV Basic; CTV Consultant; CSV Leader; CTV staff */
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type userModel struct {
@@ -25,6 +25,7 @@ func (m *userModel) GetAll(db *mgo.Database) (userlist []User) {
 }
 
 func (m *userModel) Save(u *User, db *mgo.Database) {
+	u.Id = string(bson.NewObjectId())
 	db.C(m.Name).Insert(u)
 }
 
