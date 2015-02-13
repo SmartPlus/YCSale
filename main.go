@@ -75,7 +75,6 @@ func main() {
 		Extensions: []string{".html"},
 	}))
 
-	security.Init(m)
 	if err := database.Init(MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, MONG_DB_NAME); err != nil {
 		panic(err)
 	}
@@ -85,6 +84,8 @@ func main() {
 		"user": USERS_COLLECTION_NAME,
 	})
 
+	// security use service
+	security.Init(m)
 	m.Get("/", func(r render.Render) {
 		r.HTML(200, ADMIN_PAGE, map[string]string{
 			"Title": "Admin",

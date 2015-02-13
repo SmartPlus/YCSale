@@ -38,6 +38,12 @@ func (m *userModel) FindById(id string, db *mgo.Database) (u User) {
 	return
 }
 
+func (m *userModel) FindByEmail(email string, db *mgo.Database) (u User) {
+	err := db.C(m.Name).Find(bson.M{"email": email}).One(&u)
+	println(err.Error())
+	return
+}
+
 func (m *userModel) UpdateById(id string, u *User, db *mgo.Database) {
 	u.Id = bson.ObjectIdHex(id) // safe user
 	db.C(m.Name).UpdateId(bson.ObjectIdHex(id), u)
