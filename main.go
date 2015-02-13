@@ -36,12 +36,6 @@ type Payment struct {
 	Ammount int
 }
 
-type Employee struct {
-	Id   string
-	Role int /* Admin; CTV Basic; CTV Consultant; CSV Leader; CTV staff */
-	Name string
-}
-
 const (
 	MONGO_USERNAME         = "dong"
 	MONGO_PASSWORD         = "123"
@@ -49,6 +43,7 @@ const (
 	MONGO_PORT             = 31271
 	MONG_DB_NAME           = "smartplus"
 	WISHES_COLLECTION_NAME = "wishes"
+	USERS_COLLECTION_NAME  = "users"
 	COOKIE_SECRET          = "cki"
 	COOKIE_KEY             = "my_session"
 	TEMPLATE_DIRECTORY     = "templates"
@@ -85,7 +80,11 @@ func main() {
 		panic(err)
 	}
 
-	service.Init(m, map[string]string{"wish": WISHES_COLLECTION_NAME})
+	service.Init(m, map[string]string{
+		"wish": WISHES_COLLECTION_NAME,
+		"user": USERS_COLLECTION_NAME,
+	})
+
 	m.Get("/", func(r render.Render) {
 		r.HTML(200, ADMIN_PAGE, map[string]string{
 			"Title": "Admin",

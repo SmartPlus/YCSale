@@ -8,4 +8,5 @@ import (
 func Init(m *martini.ClassicMartini, collections map[string]string) {
 	model.Init(collections)
 	addWishService(m)
+	addUserService(m)
 }

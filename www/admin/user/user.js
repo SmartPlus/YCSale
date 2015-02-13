@@ -36,17 +36,17 @@ angular.module('admin.user').controller('UserListController', ['$scope', '$route
             $event.stopPropagation();
 
             // Remove this user
-            $http.delete('/user/' + user.Id).success(function () {
+            $http.delete('/user/' + user._id).success(function () {
                 // It is gone from the DB so we can remove it from the local list too
                 $scope.users.splice($index, 1);
-                console.log('crud.user.remove.success', user.Id);
+                console.log('crud.user.remove.success', user._id);
             }).error(function (e) {
-                console.log('crud.user.remove.error', user.Id, e);
+                console.log('crud.user.remove.error', user._id, e);
             });
         };
 
         $scope.edit = function (user) {
-            $location.path('user/edit/' + user.Id);
+            $location.path('user/edit/' + user._id);
         }
 
         $scope.new = function () {
@@ -71,17 +71,18 @@ angular.module('admin.user').controller('UserEditController', ['$scope', '$route
         }
 
         $scope.edit = function () {
-            $http.put('/user/' + $scope.user.Id, $scope.user)
+            var userId = $scope.user._id
+            $http.put('/user/' + userId, $scope.user)
                 .success(function () {
-                    console.log('user.edit.success', $scope.user.Id);
+                    console.log('user.edit.success', userId);
                     $location.path('users');
                 }).error(function (e) {
-                    console.log('user.edit.error', $scope.user.Id, e);
+                    console.log('user.edit.error', userId, e);
                 })
         }
 
         $scope.save = function () {
-            if ($scope.user.Id === undefined) {
+            if ($scope.user._id === undefined) {
                 $scope.new();
             } else {
                 $scope.edit();

@@ -14,5 +14,9 @@ func Init(collections map[string]string) (err error) {
 	WishModel = wishModel{
 		Name: collections["wish"],
 	}
+
+	UserModel = userModel{
+		Name: collections["user"],
+	}
 	return
 }

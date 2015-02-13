@@ -1,15 +1,17 @@
 <table class="table table-bordered table-condensed table-striped table-hover">
     <thead>
         <tr>
-            <th>E-mail</th>
-            <th>Group</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>            
             <th></th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="user in users" ng-click="edit(user)">
-            <td>{{user.Email}}</td>
-            <td>{{user.Group}}</td>
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.role}}</td>
             <td>
                 <button class="btn btn-default btn-danger remove" ng-click="remove(user, $index, $event)">Remove</button>
             </td>
