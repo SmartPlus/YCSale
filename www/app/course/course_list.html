@@ -1,0 +1,23 @@
+<table class="table table-bordered table-condensed table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Fee</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="course in courses" ng-click="edit(course)">
+            <td>{{course.code}}</td>
+            <td>{{course.fee}}</td>
+            <td>
+                <button class="btn btn-default btn-danger remove" ng-click="remove(course, $index, $event)">
+                    Remove
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="well">
+    <button class="btn" ng-click="new()">New Course</button>
+</div>

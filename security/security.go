@@ -36,29 +36,46 @@ func SendSessionUser(r render.Render, s session.Session) {
 	})
 }
 
+func SetSessionUser(u SessionUser, s session.Session) {
+	s.Set("Id", u.Id)
+	s.Set("Name", u.Name)
+	s.Set("Email", u.Email)
+	s.Set("Role", u.Role)
+}
+
+func Unauthorized(r render.Render, s string) {
+	r.Data(402, []byte(s))
+}
+
 func Init(m *martini.ClassicMartini) {
 	m.Get(CURRENT_USER, SendSessionUser)
-	m.Post("/login", binding.Json(LoginUser{}), database.GetMartini(), func(user LoginUser, r render.Render, db *mgo.Database) {
-		u := model.UserModel.FindByEmail(user.Email, db)
-		if u.Email != user.Email {
-			r.Data(http.StatusUnauthorized, []byte("Email is not existed"))
+	m.Post("/login", binding.Json(LoginUser{}), database.GetMartini(), func(user LoginUser, r render.Render, s session.Session, db *mgo.Database) {
+		u, err := model.UserModel.FindByEmail(user.Email, db)
+		if err != nil {
+			if err == mgo.ErrNotFound {
+				Unauthorized(r, "Email is not existed")
+			} else {
+				Unauthorized(r, "Database error")
+			}
 			return
 		}
 
 		if u.Password != user.Password {
-			r.Data(http.StatusUnauthorized, []byte("Wrong password"))
+			Unauthorized(r, "Wrong password")
 			return
 		}
 
-		s := SessionUser{
+		sUser := SessionUser{
 			Id:    u.Id.Hex(),
 			Name:  u.Name,
 			Email: u.Email,
 			Role:  u.Role,
 		}
-
+		SetSessionUser(sUser, s)
 		r.JSON(200, map[string]interface{}{
-			"user": s,
+			"user": sUser,
 		})
 	})
+
+	InitDB()
 }

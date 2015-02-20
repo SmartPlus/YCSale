@@ -11,18 +11,6 @@ import (
 	"net/http"
 )
 
-type Learner struct {
-	Id       string
-	Name     string `json:"Name"`
-	Phone    string `json:"Phone"`
-	Facebook string
-	Email    string
-	School   string
-	Company  string
-	Courses  []string
-	Notes    string
-}
-
 type Course struct {
 	Id   string
 	Name string
@@ -37,18 +25,20 @@ type Payment struct {
 }
 
 const (
-	MONGO_USERNAME         = "dong"
-	MONGO_PASSWORD         = "123"
-	MONGO_HOST             = "ds031271.mongolab.com"
-	MONGO_PORT             = 31271
-	MONG_DB_NAME           = "smartplus"
-	WISHES_COLLECTION_NAME = "wishes"
-	USERS_COLLECTION_NAME  = "users"
-	COOKIE_SECRET          = "cki"
-	COOKIE_KEY             = "my_session"
-	TEMPLATE_DIRECTORY     = "templates"
-	TEMPLATE_LAYOUT        = "layout"
-	ADMIN_PAGE             = "admin"
+	MONGO_USERNAME            = "debug" //"dong"
+	MONGO_PASSWORD            = "123"
+	MONGO_HOST                = "localhost" //"ds031271.mongolab.com"
+	MONGO_PORT                = 27017       //31271
+	MONG_DB_NAME              = "smartplus"
+	WISHES_COLLECTION_NAME    = "wishes"
+	USERS_COLLECTION_NAME     = "users"
+	CUSTOMERS_COLLECTION_NAME = "customers"
+	COURSES_COLLECTION_NAME   = "courses"
+	COOKIE_SECRET             = "cki"
+	COOKIE_KEY                = "my_session"
+	TEMPLATE_DIRECTORY        = "templates"
+	TEMPLATE_LAYOUT           = "layout"
+	ADMIN_PAGE                = "admin"
 )
 
 func Authenticate() martini.Handler {
@@ -80,15 +70,22 @@ func main() {
 	}
 
 	service.Init(m, map[string]string{
-		"wish": WISHES_COLLECTION_NAME,
-		"user": USERS_COLLECTION_NAME,
+		"wish":     WISHES_COLLECTION_NAME,
+		"user":     USERS_COLLECTION_NAME,
+		"customer": CUSTOMERS_COLLECTION_NAME,
+		"course":   COURSES_COLLECTION_NAME,
 	})
 
 	// security use service
 	security.Init(m)
-	m.Get("/", func(r render.Render) {
+	m.Get("/admin", func(r render.Render) {
 		r.HTML(200, ADMIN_PAGE, map[string]string{
 			"Title": "Admin",
+		})
+	})
+	m.Get("/", func(r render.Render) {
+		r.HTML(200, "index", map[string]string{
+			"Title": "YC Sale",
 		})
 	})
 

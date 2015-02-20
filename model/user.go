@@ -24,23 +24,23 @@ func (m *userModel) GetAll(db *mgo.Database) (userlist []User) {
 	return
 }
 
-func (m *userModel) Save(u *User, db *mgo.Database) {
-	db.C(m.Name).Insert(u)
+func (m *userModel) Save(u *User, db *mgo.Database) error {
+	return db.C(m.Name).Insert(u)
 }
 
-func (m *userModel) RemoveById(id string, db *mgo.Database) {
-	err := db.C(m.Name).RemoveId(bson.ObjectIdHex(id))
-	println(err.Error())
+func (m *userModel) RemoveById(id string, db *mgo.Database) error {
+	return db.C(m.Name).RemoveId(bson.ObjectIdHex(id))
 }
 
-func (m *userModel) FindById(id string, db *mgo.Database) (u User) {
-	db.C(m.Name).FindId(bson.ObjectIdHex(id)).One(&u)
+func (m *userModel) FindById(id string, db *mgo.Database) (u *User) {
+	u = &User{}
+	db.C(m.Name).FindId(bson.ObjectIdHex(id)).One(u)
 	return
 }
 
-func (m *userModel) FindByEmail(email string, db *mgo.Database) (u User) {
-	err := db.C(m.Name).Find(bson.M{"email": email}).One(&u)
-	println(err.Error())
+func (m *userModel) FindByEmail(email string, db *mgo.Database) (u *User, err error) {
+	u = &User{}
+	err = db.C(m.Name).Find(bson.M{"email": email}).One(u)
 	return
 }
 

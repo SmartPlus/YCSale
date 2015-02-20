@@ -1,3 +1,11 @@
+//  To add a model
+// 1. Add link to script in html 
+// 2. Add module to app.js
+// 3. Link to model in header
+// 4. Model Controller
+// 5. Fields
+
+
 angular.module('app', [
 'ngRoute',
 'ngResource',
@@ -6,7 +14,8 @@ angular.module('app', [
 'services.httpRequestTracker',
 'security',
 'notyModule',
-'metric.table'
+'app.customer',
+'app.course'
 ]);
 
 angular.module('app').run(['security',
@@ -23,30 +32,13 @@ angular.module('app').controller('AppCtrl', ['$scope', 'noty',
     function ($scope, noty) {
         $scope.noty = noty;
         $scope.tpls = {
-            header: '/tpl/header.html'
+            header: '/app/tpl/header.html'
         };
 
 }]);
 
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', '$http', 'breadcrumbs', 'httpRequestTracker', 'security',
   function ($scope, $location, $route, $http, breadcrumbs, httpRequestTracker, security) {
-
-
-        $scope.$watch(function () {
-            return security.currentUser;
-        }, function (currentUser) {
-            if (currentUser) {
-                $http.get('/game_code')
-                    .success(function (data) {
-                        $scope.game_codes = data;
-                    })
-                    .error(function (data) {
-                        console.warn(arguments);
-                    })
-            }
-        });
-
-
 
         $scope.location = $location;
         $scope.breadcrumbs = breadcrumbs;
@@ -56,7 +48,7 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
         };
 
         $scope.isNavbarActive = function (navBarPath) {
-            console.log(navBarPath);
+
             return navBarPath === breadcrumbs.getFirst().name;
         };
 

@@ -201,6 +201,7 @@ angular.module('security.login').controller('LoginFormController', ['$scope', 's
                     $scope.authError = 'login.error.invalidCredentials';
                 }
             }, function (x) {
+                console.log(x)
                 // If we get here then there was a problem with the login request to the server
                 $scope.authError = 'login.error.serverError ' + x;
             });

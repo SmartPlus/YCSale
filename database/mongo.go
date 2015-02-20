@@ -22,7 +22,13 @@ var context DB
 // DB Returns a martini.Handler
 func Init(username, password, host string, port int, database string) (err error) {
 	var session *mgo.Session
-	url := fmt.Sprintf("mongodb://%v:%v@%v:%v/%v", username, password, host, port, database)
+	var url string
+	if username == "debug" {
+		url = fmt.Sprintf("mongodb://%v:%v/%v", host, port, database)
+	} else {
+		url = fmt.Sprintf("mongodb://%v:%v@%v:%v/%v", username, password, host, port, database)
+	}
+
 	session, err = mgo.Dial(url)
 	if err != nil {
 		return
@@ -54,4 +60,11 @@ func WithCollection(collection string, s func(*mgo.Collection) error) error {
 	defer session.Close()
 	c := session.DB(context.database).C(collection)
 	return s(c)
+}
+
+func WithDB(s func(*mgo.Database) error) error {
+	session := context.session.Clone()
+	defer session.Close()
+	db := session.DB(context.database)
+	return s(db)
 }

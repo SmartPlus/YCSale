@@ -1,0 +1,19 @@
+===== TO DO ======
+Security
+========
+- Authentication
+- Authorization: admin, customer
+
+Customer
+========
+- Add Customer
+- Register Customer for Courses
+- Search Customer by email, phone
+
+Course
+======
+- Add Course
+
+Architecture
+======
+- Datbase Access: error log

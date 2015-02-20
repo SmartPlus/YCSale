@@ -18,5 +18,13 @@ func Init(collections map[string]string) (err error) {
 	UserModel = userModel{
 		Name: collections["user"],
 	}
+
+	CustomerModel = customerModel{
+		Name: collections["customer"],
+	}
+
+	CourseModel = courseModel{
+		Name: collections["course"],
+	}
 	return
 }
