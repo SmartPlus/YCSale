@@ -3,6 +3,7 @@ package service
 import (
 	"YCSale/database"
 	"YCSale/model"
+	"YCSale/security"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
@@ -14,7 +15,7 @@ func addCourseService(m *martini.ClassicMartini) {
 		router.Get("", func(r render.Render, db *mgo.Database) {
 			r.JSON(200, model.CourseModel.GetAll(db))
 		})
-	}, database.GetMartini())
+	}, security.RequireLoggedIn(), database.GetMartini())
 
 	m.Group("/course", func(router martini.Router) {
 		router.Post("", binding.Json(model.Course{}), func(c model.Course, r render.Render, db *mgo.Database) {
@@ -29,5 +30,5 @@ func addCourseService(m *martini.ClassicMartini) {
 		router.Put("/:_id", binding.Json(model.Course{}), func(params martini.Params, c model.Course, r render.Render, db *mgo.Database) {
 			model.CourseModel.UpdateById(params["_id"], &c, db)
 		})
-	}, database.GetMartini())
+	}, security.RequireLoggedIn(), database.GetMartini())
 }
