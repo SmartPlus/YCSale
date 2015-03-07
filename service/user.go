@@ -1,35 +1,77 @@
 package service
 
 import (
-	"YCSale/database"
 	"YCSale/model"
-	"YCSale/security"
 	"github.com/go-martini/martini"
-	"github.com/martini-contrib/binding"
-	"github.com/martini-contrib/render"
-	"gopkg.in/mgo.v2"
+	"gopkg.in/gorp.v1"
+	"strconv"
 )
 
-func addUserService(m *martini.ClassicMartini) {
-	m.Group("/users", func(router martini.Router) {
-		router.Get("", func(r render.Render, db *mgo.Database) {
-			r.JSON(200, model.UserModel.GetAll(db))
-		})
-	}, security.RequireAdmin(), database.GetMartini())
+func (us *UserService) Map() {
+	// add a table, setting the table name to 'posts' and
+	// specifying that the Id property is an auto incrementing PK
+	userTab := us.dbmap.AddTableWithName(model.User{}, "user")
+	userTab.ColMap("Created_At").SetTransient(true)
+	userTab.SetKeys(true, "Id")
+}
 
-	m.Group("/user", func(router martini.Router) {
-		router.Post("", binding.Json(model.User{}), func(u model.User, r render.Render, db *mgo.Database) {
-			model.UserModel.Save(&u, db)
-		})
-		router.Delete("/:_id", func(params martini.Params, r render.Render, db *mgo.Database) {
-			println("Id: " + params["_id"])
-			model.UserModel.RemoveById(params["_id"], db)
-		})
-		router.Get("/:_id", func(params martini.Params, r render.Render, db *mgo.Database) {
-			r.JSON(200, model.UserModel.FindById(params["_id"], db))
-		})
-		router.Put("/:_id", binding.Json(model.User{}), func(params martini.Params, u model.User, r render.Render, db *mgo.Database) {
-			model.UserModel.UpdateById(params["_id"], &u, db)
-		})
-	}, security.RequireAdmin(), database.GetMartini())
+func (us *UserService) GetAll() (users []model.User) {
+	_, err := us.dbmap.Select(&users, "SELECT * FROM user")
+	if err != nil {
+		panic(err)
+	}
+	return
+}
+
+func (us *UserService) Insert(u *model.User) {
+	err := us.dbmap.Insert(u)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (us *UserService) Delete(s string) {
+	id, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	_, err = us.dbmap.Exec("DELETE FROM user WHERE id = ?", id)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (us *UserService) Update(u *model.User) {
+	_, err := us.dbmap.Update(u)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (us *UserService) Get(s string) (u *model.User) {
+	u = &model.User{}
+	id, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	err = us.dbmap.SelectOne(u, "SELECT * FROM user WHERE id = ?", id)
+	if err != nil {
+		panic(err)
+	}
+	return
+}
+
+type UserService struct {
+	dbmap *gorp.DbMap
+}
+
+func NewUserService(dbmap *gorp.DbMap) *UserService {
+	return &UserService{dbmap: dbmap}
+}
+
+func UserMartiniHandler() martini.Handler {
+	return func(dbmap *gorp.DbMap, c martini.Context) {
+		c.Map(NewUserService(dbmap))
+		c.Next()
+	}
 }
