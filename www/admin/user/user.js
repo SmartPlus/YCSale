@@ -12,7 +12,7 @@ angular.module('admin.user').config(['$routeProvider',
                         if (params.action === 'new') {
                             return {};
                         } else {
-                            return $http.get('/user/' + params.Id);
+                            return $http.get('/user/get/' + params.Id);
                         }
                 }]
             }
@@ -25,7 +25,7 @@ angular.module('admin.user').config(['$routeProvider',
 
 angular.module('admin.user').controller('UserListController', ['$scope', '$routeParams', '$http', '$q', '$location',
     function ($scope, $routeParams, $http, $q, $location) {
-        $http.get('/users')
+        $http.get('/user/getall')
             .success(function (users) {
                 $scope.users = users;
             });
@@ -36,17 +36,17 @@ angular.module('admin.user').controller('UserListController', ['$scope', '$route
             $event.stopPropagation();
 
             // Remove this user
-            $http.delete('/user/' + user._id).success(function () {
+            $http.delete('/user/delete/' + user.id).success(function () {
                 // It is gone from the DB so we can remove it from the local list too
                 $scope.users.splice($index, 1);
-                console.log('crud.user.remove.success', user._id);
+                console.log('crud.user.remove.success', user.id);
             }).error(function (e) {
-                console.log('crud.user.remove.error', user._id, e);
+                console.log('crud.user.remove.error', user.id, e);
             });
         };
 
         $scope.edit = function (user) {
-            $location.path('user/edit/' + user._id);
+            $location.path('user/edit/' + user.id);
         }
 
         $scope.new = function () {
@@ -60,7 +60,7 @@ angular.module('admin.user').controller('UserEditController', ['$scope', '$route
         $scope.user = user.data;
 
         $scope.new = function () {
-            $http.post('/user', $scope.user)
+            $http.post('/user/insert', $scope.user)
                 .success(function () {
                     console.log('user.add.success');
                     $location.path('users');
@@ -71,8 +71,8 @@ angular.module('admin.user').controller('UserEditController', ['$scope', '$route
         }
 
         $scope.edit = function () {
-            var userId = $scope.user._id
-            $http.put('/user/' + userId, $scope.user)
+            var userId = $scope.user.id
+            $http.put('/user/update/' + userId, $scope.user)
                 .success(function () {
                     console.log('user.edit.success', userId);
                     $location.path('users');
@@ -82,7 +82,7 @@ angular.module('admin.user').controller('UserEditController', ['$scope', '$route
         }
 
         $scope.save = function () {
-            if ($scope.user._id === undefined) {
+            if ($scope.user.id === undefined) {
                 $scope.new();
             } else {
                 $scope.edit();
