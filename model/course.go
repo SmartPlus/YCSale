@@ -1,55 +1,26 @@
 package model
 
 import (
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/gorp.v1"
 )
 
 type Course struct {
-	Id   bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
-	Code string        `json:"code"`
-	Fee  int           `json:"fee"`
-	// Beginning Date
-	// End Date
-	// Payment Due
+	Id          int    `json:"id"`
+	Code        string `json:"code"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Teacher     int    `json:"teacher"`
+	Fee         int    `json:"fee"`
+	Timetable   string `json:"timetable"`
+	Start_Date  string `json:"start_date"`
+	End_Date    string `json:"end_date"`
+	Created_At  string `json:"created_at"`
 }
 
-type courseModel struct {
-	Name string
-}
-
-var CourseModel courseModel
-
-func (m *courseModel) GetAll(db *mgo.Database) (courseList []Course) {
-	db.C(m.Name).Find(nil).All(&courseList)
-	return
-}
-
-func (m *courseModel) FindByIds(ids []bson.ObjectId, db *mgo.Database) (courseList []Course) {
-	db.C(m.Name).Find(bson.M{
-		"_id": bson.M{
-			"$in": ids,
-		},
-	}).All(&courseList)
-	return
-}
-
-func (m *courseModel) Save(c *Course, db *mgo.Database) {
-	db.C(m.Name).Insert(c)
-}
-
-func (m *courseModel) RemoveById(id string, db *mgo.Database) error {
-	return db.C(m.Name).RemoveId(bson.ObjectIdHex(id))
-}
-
-func (m *courseModel) FindById(id string, db *mgo.Database) (c *Course) {
-	c = &Course{}
-	db.C(m.Name).FindId(bson.ObjectIdHex(id)).One(c)
-	return
-}
-
-func (m *courseModel) UpdateById(id string, c *Course, db *mgo.Database) {
-	c.Id = bson.ObjectIdHex(id) // safe user
-	db.C(m.Name).UpdateId(c.Id, c)
-	return
+func (c *Course) dbmapCourse(dbmap *gorp.DbMap) {
+	// add a table, setting the table name to 'posts' and
+	// specifying that the Id property is an auto incrementing PK
+	courseTab := dbmap.AddTableWithName(Course{}, "course")
+	courseTab.ColMap("Created_At").SetTransient(true)
+	courseTab.SetKeys(true, "Id")
 }
