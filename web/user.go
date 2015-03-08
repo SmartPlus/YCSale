@@ -3,6 +3,7 @@ package web
 import (
 	"YCSale/model"
 	"YCSale/service"
+	"YCSale/service/security"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
@@ -31,5 +32,5 @@ func addUserHandlers(m *martini.ClassicMartini) {
 		router.Put("/update/:_id", binding.Json(model.User{}), func(params martini.Params, u model.User, r render.Render, us *service.UserService) {
 			us.Update(&u)
 		})
-	}, service.UserMartiniHandler())
+	}, service.UserMartiniHandler(), security.SecurityMartiniHandler(), security.RequireAdmin())
 }

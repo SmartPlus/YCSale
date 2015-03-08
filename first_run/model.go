@@ -6,11 +6,13 @@ import (
 
 func createAdmin() *model.User {
 	return &model.User{
-		Role:      "admin",
-		FirstName: "admin",
-		LastName:  "admin",
-		Email:     "admin@smartplus.com",
-		Password:  "123456",
-		Phone:     "091",
+		IUserContact: model.IUserContact{
+			Role:      "admin",
+			FirstName: "admin",
+			LastName:  "admin",
+			Email:     "admin@abc.com",
+		},
+		Password: "123",
+		Phone:    "091",
 	}
 }

@@ -2,8 +2,7 @@ package main
 
 import (
 	"YCSale/service"
-	// "YCSale/security"
-	"YCSale/session"
+	"YCSale/service/session"
 	"YCSale/web"
 	// 	"encoding/json"
 	"github.com/go-martini/martini"
@@ -12,8 +11,6 @@ import (
 )
 
 const (
-	COOKIE_SECRET      = "cki"
-	COOKIE_KEY         = "my_session"
 	TEMPLATE_DIRECTORY = "templates"
 	TEMPLATE_LAYOUT    = "layout"
 	ADMIN_PAGE         = "admin"
@@ -36,15 +33,15 @@ func main() {
 	/* global middleware */
 	m.Use(martini.Recovery())
 	m.Use(martini.Static("www"))
-	session.Init(COOKIE_SECRET, COOKIE_KEY, m)
 	m.Use(render.Renderer(render.Options{
 		Directory:  TEMPLATE_DIRECTORY,
 		Layout:     TEMPLATE_LAYOUT,
 		Extensions: []string{".html"},
 	}))
 
-	m.Use(service.DbMartiniHandler())
+	m.Use(session.Session())
 
+	m.Use(service.DbMartiniHandler())
 	web.Init(m)
 
 	m.Get("/admin", func(r render.Render) {

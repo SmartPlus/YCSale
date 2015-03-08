@@ -7,12 +7,12 @@ import (
 	"strconv"
 )
 
-func (us *UserService) Map() {
-	// add a table, setting the table name to 'posts' and
-	// specifying that the Id property is an auto incrementing PK
-	userTab := us.dbmap.AddTableWithName(model.User{}, "user")
-	userTab.ColMap("Created_At").SetTransient(true)
-	userTab.SetKeys(true, "Id")
+type UserService struct {
+	dbmap *gorp.DbMap
+}
+
+func NewUserService(dbmap *gorp.DbMap) *UserService {
+	return &UserService{dbmap: dbmap}
 }
 
 func (us *UserService) GetAll() (users []model.User) {
@@ -61,12 +61,21 @@ func (us *UserService) Get(s string) (u *model.User) {
 	return
 }
 
-type UserService struct {
-	dbmap *gorp.DbMap
+func (us *UserService) FindByEmail(email string) (u *model.User, err error) {
+	u = &model.User{}
+	err = us.dbmap.SelectOne(u, "SELECT * FROM user WHERE email = ?", email)
+	if err != nil {
+		return nil, err
+	}
+	return
 }
 
-func NewUserService(dbmap *gorp.DbMap) *UserService {
-	return &UserService{dbmap: dbmap}
+func (us *UserService) Map() {
+	// add a table, setting the table name to 'posts' and
+	// specifying that the Id property is an auto incrementing PK
+	userTab := us.dbmap.AddTableWithName(model.User{}, "user")
+	userTab.ColMap("Created_At").SetTransient(true)
+	userTab.SetKeys(true, "Id")
 }
 
 func UserMartiniHandler() martini.Handler {

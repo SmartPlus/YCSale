@@ -6,4 +6,5 @@ import (
 
 func Init(m *martini.ClassicMartini) {
 	addUserHandlers(m)
+	addSecurityHandler(m)
 }

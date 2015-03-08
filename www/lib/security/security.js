@@ -67,7 +67,7 @@ angular.module('security.service').factory('security', ['$http', '$q', '$locatio
 
             // Attempt to authenticate a user by the given email and password
             login: function (email, password) {
-                var request = $http.post('/login', {
+                var request = $http.post('/security/login', {
                     email: email,
                     password: password
                 });
@@ -91,7 +91,7 @@ angular.module('security.service').factory('security', ['$http', '$q', '$locatio
 
             // Logout the current user and redirect
             logout: function (redirectTo) {
-                $http.post('/logout').then(function () {
+                $http.post('/security/logout').then(function () {
                     service.currentUser = null;
                     redirect(redirectTo);
                 });
@@ -102,7 +102,7 @@ angular.module('security.service').factory('security', ['$http', '$q', '$locatio
                 if (service.isAuthenticated()) {
                     return $q.when(service.currentUser);
                 } else {
-                    return $http.get('/current-user').then(function (response) {
+                    return $http.get('/security/current-user').then(function (response) {
                         service.currentUser = response.data.user;
                         return service.currentUser;
                     });
