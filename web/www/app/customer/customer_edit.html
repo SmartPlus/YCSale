@@ -1,0 +1,52 @@
+<form class="form-horizontal" role="form">
+    <div class="alert alert-info">Edit Customer</div>
+
+    <div class="form-group">
+        <label for="name" class="col-sm-1 control-label">Name</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="name" placeholder="" required autofocus ng-model="customer.name">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="email" class="col-sm-1 control-label">Email</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="email" placeholder="" required autofocus ng-model="customer.email">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="phone" class="col-sm-1 control-label">Phone</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="phone" required ng-model="customer.phone" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="facebook" class="col-sm-1 control-label">facebook</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="facebook" required ng-model="customer.facebook" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="school" class="col-sm-1 control-label">School</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="school" required ng-model="customer.school" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="company" class="col-sm-1 control-label">Company</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="company" required ng-model="customer.company" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-1 col-sm-6">
+            <button class="btn btn-success" ng-click="save()">Save</button>
+            <button class="btn btn-default" ng-click="revert()">Revert Changes</button>
+        </div>
+    </div>
+</form>

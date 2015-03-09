@@ -1,0 +1,15 @@
+
+<!-- Lib -->
+<script type="text/javascript" src="/admin/admin.js"></script>
+<script type="text/javascript" src="/admin/user/user.js"></script>
+
+<body ng-app="admin" ng-controller="AdminController">
+    <div class="container-fluid">
+        <div ng-repeat="(name, link) in tpls">
+            <div ng-include="link"></div>
+        </div>
+        <div ng-view></div>
+    </div>
+</body>
+
+

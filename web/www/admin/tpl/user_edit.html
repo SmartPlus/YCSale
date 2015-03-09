@@ -1,0 +1,63 @@
+<form name="$form" class="form-horizontal" role="form">
+    <div class="alert alert-info">Edit User</div>
+
+    <div class="form-group">
+        <label for="lastname" class="col-sm-1 control-label">Last Name</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="lastname" placeholder="" required autofocus ng-model="user.lastname">
+            <div ng-show="$form.lastname.$dirty && $form.lastname.$invalid"> Last name is required </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="imddlename" class="col-sm-1 control-label">Middle Name</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="middlename" placeholder="" ng-model="user.middlename">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="firstname" class="col-sm-1 control-label">First Name</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="firstname" placeholder="" required  ng-model="user.firstname">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="phone" class="col-sm-1 control-label">Phone Number</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" ng-minlength=10 ng-maxlength=12 name="phone" placeholder="" required autofocus ng-model="user.phone">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="email" class="col-sm-1 control-label">Email</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="email" placeholder="" required autofocus ng-model="user.email">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="password" class="col-sm-1 control-label">Password</label>
+        <div class="col-sm-3">
+            <input type="password" class="form-control" name="password" required ng-model="user.password" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="role" class="col-sm-1 control-label">Role</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="role" required ng-model="user.role" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-1 col-sm-6" ng-show="user.id">
+            <button class="btn btn-success" ng-disabled="$form.$invalid" ng-click="save()">Save</button>
+            <button class="btn btn-warning" ng-confirm-click="Do you want to cancel?" ng-click="redirect()">Cancel</button>
+            <button class="btn btn-danger" ng-confirm-click="Do you want to remove this user?" ng-click="remove()">Remove</button>
+        </div>
+        <div class="col-sm-offset-1 col-sm-6" ng-hide="user.id">
+            <a class="btn btn-success" ng-click="add()" >Add</a>
+        </div>
+    </div>
+</form>
