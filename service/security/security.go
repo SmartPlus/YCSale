@@ -46,7 +46,7 @@ func (sec *SecurityService) Login(loginUser *LoginUser, us *service.UserService)
 		return errors.New("Wrong Password")
 	}
 
-	sessionUser := &session.User{IUserContact: user.IUserContact}
+	sessionUser := session.NewSessionUser(user)
 	sec.session.SetUser(sessionUser)
 	sec.session.Login()
 	return nil

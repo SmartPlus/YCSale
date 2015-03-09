@@ -23,6 +23,8 @@ func OpenDB(dbname string) (db *sql.DB, err error) {
 func GetDbMap(db *sql.DB) *gorp.DbMap {
 	// construct a gorp DbMapt
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
+	dbmap.TraceOn("[MySQL]", errLog)
+
 	NewUserService(dbmap).Map()
 	// (&Customer{}).dbmapCustomer(dbmap)
 	// (&Course{}).dbmapCourse(dbmap)

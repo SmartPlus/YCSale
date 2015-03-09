@@ -2,9 +2,10 @@ package service
 
 import (
 	"YCSale/model"
+	"database/sql"
+	"errors"
 	"github.com/go-martini/martini"
 	"gopkg.in/gorp.v1"
-	"strconv"
 )
 
 type UserService struct {
@@ -15,48 +16,52 @@ func NewUserService(dbmap *gorp.DbMap) *UserService {
 	return &UserService{dbmap: dbmap}
 }
 
-func (us *UserService) GetAll() (users []model.User) {
-	_, err := us.dbmap.Select(&users, "SELECT * FROM user")
+func (us *UserService) GetAll() (users []model.User, err error) {
+	_, err = us.dbmap.Select(&users, "SELECT * FROM user")
 	if err != nil {
-		panic(err)
+		return nil, LogError(err)
 	}
-	return
+	return users, nil
 }
 
-func (us *UserService) Insert(u *model.User) {
-	err := us.dbmap.Insert(u)
+func (us *UserService) Insert(u *model.User) (err error) {
+	u0, err := us.FindByEmail(u.Email)
 	if err != nil {
-		panic(err)
+		return
 	}
+
+	if u0 != nil {
+		return errors.New("Email existed")
+	}
+
+	err = us.dbmap.Insert(u)
+	return LogError(err)
 }
 
-func (us *UserService) Delete(s string) {
-	id, err := strconv.Atoi(s)
-	if err != nil {
-		panic(err)
-	}
-	_, err = us.dbmap.Exec("DELETE FROM user WHERE id = ?", id)
-	if err != nil {
-		panic(err)
-	}
+func (us *UserService) Delete(id int) error {
+	_, err := us.dbmap.Exec("DELETE FROM user WHERE id = ?", id)
+	return LogError(err)
 }
 
-func (us *UserService) Update(u *model.User) {
+func (us *UserService) Update(u *model.User) error {
 	_, err := us.dbmap.Update(u)
 	if err != nil {
-		panic(err)
+		return LogError(err)
 	}
+	return nil
 }
 
-func (us *UserService) Get(s string) (u *model.User) {
+func (us *UserService) Get(id int) (u *model.User, err error) {
 	u = &model.User{}
-	id, err := strconv.Atoi(s)
-	if err != nil {
-		panic(err)
-	}
+
 	err = us.dbmap.SelectOne(u, "SELECT * FROM user WHERE id = ?", id)
+
 	if err != nil {
-		panic(err)
+		if err == sql.ErrNoRows {
+			return nil, nil
+		} else {
+			return nil, LogError(err)
+		}
 	}
 	return
 }
@@ -65,7 +70,11 @@ func (us *UserService) FindByEmail(email string) (u *model.User, err error) {
 	u = &model.User{}
 	err = us.dbmap.SelectOne(u, "SELECT * FROM user WHERE email = ?", email)
 	if err != nil {
-		return nil, err
+		if err == sql.ErrNoRows {
+			return nil, nil
+		} else {
+			return nil, LogError(err)
+		}
 	}
 	return
 }

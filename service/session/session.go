@@ -15,13 +15,22 @@ const (
 )
 
 type User struct {
-	model.IUserContact
+	model.IContact
+	model.IUser
 	isLoggedIn bool
 }
 
 type SessionService struct {
 	sessions.Session
 	// cache user
+}
+
+func NewSessionUser(u *model.User) *User {
+	return &User{
+		IContact:   u.IContact,
+		IUser:      u.IUser,
+		isLoggedIn: false,
+	}
 }
 
 func NewSessionService(s sessions.Session) *SessionService {
